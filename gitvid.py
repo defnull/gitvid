@@ -101,7 +101,7 @@ class Renderer:
                     self.last_msg = self.next_msg
                     continue
 
-                print('(%d/%d) %s %s' % (i, len(log), self.last_sha[:8], self.last_msg))
+                print('(%d/%d) %s %s' % (i, len(log), self.next_sha[:8], self.next_msg))
      
                 self.render_diff()
                 
@@ -178,7 +178,7 @@ class Renderer:
 
             self.draw.point(points, color)
 
-        text = '%s %s' % (self.last_sha[:8], self.last_msg)
+        text = '%s %s' % (self.next_sha[:8], self.next_msg)
         self.draw.text((0, 0), text, font=self.font, fill=(0,0,0,255))
 
         self.image.save(self.video_out, 'JPEG', quality=self.quality)
@@ -221,7 +221,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='Visualize source code history')
     parser.add_argument('-o', '--out', metavar='OUT', default="gitvid.flv", help="Filename fo the target video file. (default: gitvid.flv)")
-    #parser.add_argument('--fps', default="60", type=int, help="Frames per second (default: 60)")
+    parser.add_argument('--fps', default="60", type=int, help="Frames per second (default: 60)")
     parser.add_argument('--size', default="720p", help="Video resolution. Either [WIDTH]x[HEIGHT] or the name of a common resolution (e.g. 790p, 1080p, 4k, ...) (default: 790p)")
     parser.add_argument('--style', default=None, help="Pygments syntax highlighting style (default: No syntax highlighting)")
     parser.add_argument('--dry-run',  action='store_true', help="Run without actually generating a video.")
@@ -235,7 +235,7 @@ def main():
     else:
         size = map(int, args.size.split('x', 1))
     
-    r = Renderer(args.SOURCE, args.PATH, out=args.out, size=size, pygments_style=args.style)
+    r = Renderer(args.SOURCE, args.PATH, out=args.out, size=size, pygments_style=args.style, fps=args.fps)
     r.run()
 
 if __name__ == "__main__":
