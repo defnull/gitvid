@@ -40,7 +40,7 @@ def _c_blend(c1,c2,f=0.5):
 
 class Renderer:
     def __init__(self, git_path, filename, out="out.flv",
-            pygments_style="default", fps=60, size=(1280, 720), quality=90):
+            pygments_style="default", fps=60, size=(1280, 720), quality=90, fast=False):
         self.git_path = git_path
         self.filename = filename
         self.width, self.height = size
@@ -51,6 +51,7 @@ class Renderer:
         self.fps = fps
         self.quality = quality
         self.font = PIL.ImageFont.load(font)
+        self.fast = fast
 
         self.do_highlight = False
 
@@ -113,15 +114,18 @@ class Renderer:
 
     def render_diff(self):
         src = self.sh('git','show', '%s:%s' % (self.last_sha, self.filename))
-        for op, ln, line in self.sha_diff():
-            sys.stdout.write(op)
-            sys.stdout.flush()
-            if op == '+':
-                src.insert(ln, line)
-            elif op == '-':
-                del src[ln]
+        if self.fast:
             self.render(src)
-        sys.stdout.write('\n')
+        else:
+            for op, ln, line in self.sha_diff():
+                sys.stdout.write(op)
+                sys.stdout.flush()
+                if op == '+':
+                    src.insert(ln, line)
+                elif op == '-':
+                    del src[ln]
+                self.render(src)
+            sys.stdout.write('\n')
 
     def sha_diff(self):
         lines = self.sh('git','diff','--minimal', self.last_sha, self.next_sha, '--', self.filename)
@@ -224,6 +228,7 @@ def main():
     parser.add_argument('--fps', default="60", type=int, help="Frames per second (default: 60)")
     parser.add_argument('--size', default="720p", help="Video resolution. Either [WIDTH]x[HEIGHT] or the name of a common resolution (e.g. 790p, 1080p, 4k, ...) (default: 790p)")
     parser.add_argument('--style', default=None, help="Pygments syntax highlighting style (default: No syntax highlighting)")
+    parser.add_argument('--fast',  action='store_true', help="Do not visualize individual line additions and deletions, but only full commits.")
     parser.add_argument('--dry-run',  action='store_true', help="Run without actually generating a video.")
     parser.add_argument('SOURCE', help="Source folder (git repository)")
     parser.add_argument('PATH', help="Filenames to include in the visualization")
@@ -235,7 +240,7 @@ def main():
     else:
         size = map(int, args.size.split('x', 1))
     
-    r = Renderer(args.SOURCE, args.PATH, out=args.out, size=size, pygments_style=args.style, fps=args.fps)
+    r = Renderer(args.SOURCE, args.PATH, out=args.out, size=size, pygments_style=args.style, fps=args.fps, fast=args.fast)
     r.run()
 
 if __name__ == "__main__":

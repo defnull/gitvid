@@ -26,7 +26,8 @@ Based on this idea: https://github.com/drummyfish/gitviz
 
 ## Usage
 
-    usage: gitvid.py [-h] [-o OUT] [--size SIZE] [--style STYLE] [--dry-run]
+    usage: gitvid.py [-h] [-o OUT] [--fps FPS] [--size SIZE] [--style STYLE]
+                     [--fast] [--dry-run]
                      SOURCE PATH
 
     Visualize source code history
@@ -38,11 +39,15 @@ Based on this idea: https://github.com/drummyfish/gitviz
     optional arguments:
       -h, --help         show this help message and exit
       -o OUT, --out OUT  Filename fo the target video file. (default: gitvid.flv)
+      --fps FPS          Frames per second (default: 60)
       --size SIZE        Video resolution. Either [WIDTH]x[HEIGHT] or the name of
                          a common resolution (e.g. 790p, 1080p, 4k, ...) (default:
                          790p)
       --style STYLE      Pygments syntax highlighting style (default: No syntax
                          highlighting)
+      --fast             Do not visualize individual line additions and deletions,
+                         but only full commits.
+
 
 
 ## Example
