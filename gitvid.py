@@ -11,9 +11,9 @@ font = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'font.pil')
 class StyleDict(dict):
     ''' Store color information based on pygments token types. '''
     
-    def _init__(self):
-        self["bg"] = '#ffffff'
+    def __init__(self):
         self["fg"] = '#000000'
+        self["bg"] = '#ffffff'
 
     def __missing__(self, token):
         ''' Search the token hierarchy for missing tokens. Default to
