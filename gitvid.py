@@ -43,7 +43,6 @@ class Renderer:
             pygments_style="default", fps=60, size=(1280, 720), quality=90):
         self.git_path = git_path
         self.filename = filename
-        self.last_sha = None
         self.width, self.height = size
         self.border = 15
         self.lexer = pygments.lexers.get_lexer_for_filename(self.filename)
@@ -53,7 +52,10 @@ class Renderer:
         self.quality = quality
         self.font = PIL.ImageFont.load(font)
 
+        self.do_highlight = False
+
         if pygments_style:
+            self.do_highlight = True
             self.load_pygments_style(pygments_style)
             
     def load_pygments_style(self, name):
@@ -85,20 +87,26 @@ class Renderer:
               stdout = open("/dev/null", 'wb'))
         self.video_out = self.video_prog.stdin
         
+        self.image = PIL.Image.new("RGB", (self.width, self.height), self.style["bg"])
+        self.draw  = PIL.ImageDraw.Draw(self.image)
+        
         try:
+            self.last_sha = self.last_msg = None
             log = self.sh('git','log','--reverse','--pretty=oneline','--', self.filename)
             for i, line in enumerate(log):
-                self.next_sha, self.commit_msg = line.split(None, 1)
-
-                print('(%d/%d) %s %s' % (i, len(log), self.next_sha[:8], self.commit_msg))
+                self.next_sha, self.next_msg = line.split(None, 1)
 
                 if not self.last_sha:
                     self.last_sha = self.next_sha
+                    self.last_msg = self.next_msg
                     continue
+
+                print('(%d/%d) %s %s' % (i, len(log), self.last_sha[:8], self.last_msg))
      
                 self.render_diff()
                 
                 self.last_sha = self.next_sha
+                self.last_msg = self.next_msg
         finally:
             self.video_out.close()
             self.video_prog.wait()
@@ -135,14 +143,19 @@ class Renderer:
                 ln_new += 1
 
     def render(self, src):
-        image = PIL.Image.new("RGB", (self.width, self.height), self.style["bg"])
-        draw = PIL.ImageDraw.Draw(image)
-        
+        self.draw.rectangle((0,0,self.width, self.height), self.style['bg'])
+            
         row = self.border
         col = -1
         offset = self.border
         maxcol = 0
-        for token, text in pygments.lex('\n'.join(src), self.lexer):
+        
+        if self.do_highlight:
+            tokens = pygments.lex('\n'.join(src), self.lexer)
+        else:
+            tokens = [(Token.Text, '\n'.join(src))]
+        
+        for token, text in tokens:
             color = self.style[token]
             points = []
             for c in text:
@@ -163,12 +176,12 @@ class Renderer:
 
                 points.extend((col + offset, row))
 
-            draw.point(points, color)
+            self.draw.point(points, color)
 
-        text = '%s %s' % (self.next_sha[:8], self.commit_msg)
-        draw.text((0, 0), text, font=self.font, fill=(0,0,0,255))
+        text = '%s %s' % (self.last_sha[:8], self.last_msg)
+        self.draw.text((0, 0), text, font=self.font, fill=(0,0,0,255))
 
-        image.save(self.video_out, 'JPEG', quality=self.quality)
+        self.image.save(self.video_out, 'JPEG', quality=self.quality)
 
 
 video_size = {
@@ -210,7 +223,7 @@ def main():
     parser.add_argument('-o', '--out', metavar='OUT', default="gitvid.flv", help="Filename fo the target video file. (default: gitvid.flv)")
     #parser.add_argument('--fps', default="60", type=int, help="Frames per second (default: 60)")
     parser.add_argument('--size', default="720p", help="Video resolution. Either [WIDTH]x[HEIGHT] or the name of a common resolution (e.g. 790p, 1080p, 4k, ...) (default: 790p)")
-    parser.add_argument('--style', default="default", help="Pygments syntax highlighting style (default: default)")
+    parser.add_argument('--style', default=None, help="Pygments syntax highlighting style (default: No syntax highlighting)")
     parser.add_argument('--dry-run',  action='store_true', help="Run without actually generating a video.")
     parser.add_argument('SOURCE', help="Source folder (git repository)")
     parser.add_argument('PATH', help="Filenames to include in the visualization")

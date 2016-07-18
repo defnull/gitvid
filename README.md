@@ -7,6 +7,7 @@ Based on this idea: https://github.com/drummyfish/gitviz
 ## TODO (Contributions welcomed)
 
   - [ ] Performance improvements
+  - [ ] Fix large diffs on merge commits
   - [ ] Visualize multiple files at once
     - [ ] Add a way to include and exclude files based on file name globs (e.g. *.py)
   - [ ] Customize ffmpeg command options
