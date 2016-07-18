@@ -40,7 +40,7 @@ def _c_blend(c1,c2,f=0.5):
 
 class Renderer:
     def __init__(self, git_path, filename, out="out.flv",
-            pygments_style="bw", fps=60, size=(1280, 720), quality=90):
+            pygments_style="default", fps=60, size=(1280, 720), quality=90):
         self.git_path = git_path
         self.filename = filename
         self.last_sha = None
@@ -210,7 +210,7 @@ def main():
     parser.add_argument('-o', '--out', metavar='OUT', default="gitvid.flv", help="Filename fo the target video file. (default: gitvid.flv)")
     #parser.add_argument('--fps', default="60", type=int, help="Frames per second (default: 60)")
     parser.add_argument('--size', default="720p", help="Video resolution. Either [WIDTH]x[HEIGHT] or the name of a common resolution (e.g. 790p, 1080p, 4k, ...) (default: 790p)")
-    parser.add_argument('--style', default="bw", help="Pygments syntax highlighting style (default: bw)")
+    parser.add_argument('--style', default="default", help="Pygments syntax highlighting style (default: default)")
     parser.add_argument('--dry-run',  action='store_true', help="Run without actually generating a video.")
     parser.add_argument('SOURCE', help="Source folder (git repository)")
     parser.add_argument('PATH', help="Filenames to include in the visualization")
