@@ -26,7 +26,10 @@ Based on this idea: https://github.com/drummyfish/gitviz
 
 ## Usage
 
-    usage: gitvid.py [-h] [-o OUT] [--size SIZE] [--style STYLE] [--dry-run] SOURCE PATH
+    usage: gitvid.py [-h] [-o OUT] [--size SIZE] [--style STYLE] [--dry-run]
+                     SOURCE PATH
+
+    Visualize source code history
 
     positional arguments:
       SOURCE             Source folder (git repository)
@@ -38,8 +41,9 @@ Based on this idea: https://github.com/drummyfish/gitviz
       --size SIZE        Video resolution. Either [WIDTH]x[HEIGHT] or the name of
                          a common resolution (e.g. 790p, 1080p, 4k, ...) (default:
                          790p)
-      --style STYLE      Pygments syntax highlighting style (default: bw)
-      --dry-run          Run without actually generating a video.
+      --style STYLE      Pygments syntax highlighting style (default: No syntax
+                         highlighting)
+
 
 ## Example
 
