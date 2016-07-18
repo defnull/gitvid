@@ -4,6 +4,18 @@ Tool to visualize source code history
 
 Based on this idea: https://github.com/drummyfish/gitviz 
 
+## TODO (Contributions welcomed)
+
+  - [ ] Performance improvements
+  - [ ] Visualize multiple files at once
+    - [ ] Add a way to include and exclude files based on file name globs (e.g. *.py)
+  - [ ] Customize ffmpeg command options
+  - [ ] Add live-preview with ffplay
+  - [ ] Customize the commit message string
+  - [ ] Add various verbosity flags (e.g. to show ffmpeg output)
+  - [ ] Add a speedup factor (render a frame every N changes only)
+  - [ ] Add a scaling factor (render images bigger than final video)
+
 ## Dependencies
 
   * python3-imaging
