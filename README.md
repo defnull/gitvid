@@ -2,6 +2,8 @@
 
 Tool to visualize source code history
 
+[![Example Video](http://img.youtube.com/vi/FBHdaYsWjk8/2.jpg)](http://www.youtube.com/watch?v=FBHdaYsWjk8)
+
 Based on this idea: https://github.com/drummyfish/gitviz 
 
 ## TODO (Contributions welcomed)
@@ -47,8 +49,6 @@ Based on this idea: https://github.com/drummyfish/gitviz
                          highlighting)
       --fast             Do not visualize individual line additions and deletions,
                          but only full commits.
-
-
 
 ## Example
 
