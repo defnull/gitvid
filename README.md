@@ -21,10 +21,17 @@ Based on this idea: https://github.com/drummyfish/gitviz
 
 ## Dependencies
 
-  * python3-imaging
-  * python3-pygments
-  * ffmpeg
-  * git
+GitVid is written for **Python3** and uses **pygments** for syntax highlighting and **PIL or Pillow** for image rendering. It calls **git** to fetch the history and **ffmpeg** to render the video. These commands must be installed and present in the current ``$PATH``.
+
+Debian/Ubuntu:
+
+    $ sudo apt-get install python3-imaging python3-pygments ffmpeg git
+
+Max OSX:
+
+    $ brew install ffmpeg
+    $ brew install git
+    $ pip install pygments Pillow
 
 ## Usage
 
